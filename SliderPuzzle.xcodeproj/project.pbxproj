@@ -8,20 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		0484024E1E8545CB003D5256 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0484024D1E8545CB003D5256 /* AppDelegate.swift */; };
-		048402501E8545CB003D5256 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0484024F1E8545CB003D5256 /* ViewController.swift */; };
 		048402531E8545CB003D5256 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 048402511E8545CB003D5256 /* Main.storyboard */; };
 		048402551E8545CB003D5256 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 048402541E8545CB003D5256 /* Assets.xcassets */; };
 		048402581E8545CB003D5256 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 048402561E8545CB003D5256 /* LaunchScreen.storyboard */; };
+		048402631E855117003D5256 /* GameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048402611E855117003D5256 /* GameCell.swift */; };
+		048402641E855117003D5256 /* GameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 048402621E855117003D5256 /* GameCell.xib */; };
+		0484026C1E85766B003D5256 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0484026B1E85766B003D5256 /* GameViewController.swift */; };
+		0484026E1E8587F7003D5256 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0484026D1E8587F7003D5256 /* GameModel.swift */; };
+		048402701E859A06003D5256 /* Cellinfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0484026F1E859A06003D5256 /* Cellinfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0484024A1E8545CB003D5256 /* SliderPuzzle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SliderPuzzle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0484024D1E8545CB003D5256 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0484024F1E8545CB003D5256 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		048402521E8545CB003D5256 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		048402541E8545CB003D5256 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		048402571E8545CB003D5256 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		048402591E8545CB003D5256 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		048402611E855117003D5256 /* GameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCell.swift; sourceTree = "<group>"; };
+		048402621E855117003D5256 /* GameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameCell.xib; sourceTree = "<group>"; };
+		0484026B1E85766B003D5256 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		0484026D1E8587F7003D5256 /* GameModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
+		0484026F1E859A06003D5256 /* Cellinfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cellinfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,11 +63,15 @@
 			isa = PBXGroup;
 			children = (
 				0484024D1E8545CB003D5256 /* AppDelegate.swift */,
-				0484024F1E8545CB003D5256 /* ViewController.swift */,
 				048402511E8545CB003D5256 /* Main.storyboard */,
+				0484026B1E85766B003D5256 /* GameViewController.swift */,
 				048402541E8545CB003D5256 /* Assets.xcassets */,
 				048402561E8545CB003D5256 /* LaunchScreen.storyboard */,
 				048402591E8545CB003D5256 /* Info.plist */,
+				048402611E855117003D5256 /* GameCell.swift */,
+				048402621E855117003D5256 /* GameCell.xib */,
+				0484026D1E8587F7003D5256 /* GameModel.swift */,
+				0484026F1E859A06003D5256 /* Cellinfo.swift */,
 			);
 			path = SliderPuzzle;
 			sourceTree = "<group>";
@@ -125,6 +137,7 @@
 				048402581E8545CB003D5256 /* LaunchScreen.storyboard in Resources */,
 				048402551E8545CB003D5256 /* Assets.xcassets in Resources */,
 				048402531E8545CB003D5256 /* Main.storyboard in Resources */,
+				048402641E855117003D5256 /* GameCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,8 +148,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				048402501E8545CB003D5256 /* ViewController.swift in Sources */,
+				0484026E1E8587F7003D5256 /* GameModel.swift in Sources */,
+				048402701E859A06003D5256 /* Cellinfo.swift in Sources */,
+				0484026C1E85766B003D5256 /* GameViewController.swift in Sources */,
 				0484024E1E8545CB003D5256 /* AppDelegate.swift in Sources */,
+				048402631E855117003D5256 /* GameCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
