@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="P4h-dc-wwc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F2109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="P4h-dc-wwc">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
@@ -20,10 +20,11 @@
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ul9-kC-bQl">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="ul9-kC-bQl" secondAttribute="height" multiplier="1:1" id="OS0-1B-QUu"/>
                                 </constraints>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="zjN-Ak-iPs">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="0.0" id="zjN-Ak-iPs">
                                     <size key="itemSize" width="50" height="50"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -54,20 +55,20 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="ul9-kC-bQl" secondAttribute="trailing" constant="5" id="IFO-dr-g0a"/>
+                            <constraint firstItem="ul9-kC-bQl" firstAttribute="leading" secondItem="qmC-4s-YJj" secondAttribute="leading" constant="5" id="JZv-r6-QjK"/>
                             <constraint firstItem="ul9-kC-bQl" firstAttribute="centerX" secondItem="qmC-4s-YJj" secondAttribute="centerX" id="JgZ-6f-6w2"/>
-                            <constraint firstAttribute="trailing" secondItem="ul9-kC-bQl" secondAttribute="trailing" id="KQO-mz-Sbu"/>
                             <constraint firstItem="ul9-kC-bQl" firstAttribute="centerY" secondItem="qmC-4s-YJj" secondAttribute="centerY" id="gvi-Lf-pkf"/>
-                            <constraint firstItem="ul9-kC-bQl" firstAttribute="leading" secondItem="qmC-4s-YJj" secondAttribute="leading" id="rJO-V1-ENh"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="ul9-kC-bQl"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="IFO-dr-g0a"/>
+                                <exclude reference="JZv-r6-QjK"/>
                                 <exclude reference="JgZ-6f-6w2"/>
-                                <exclude reference="KQO-mz-Sbu"/>
                                 <exclude reference="gvi-Lf-pkf"/>
-                                <exclude reference="rJO-V1-ENh"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -75,10 +76,10 @@
                                 <include reference="ul9-kC-bQl"/>
                             </mask>
                             <mask key="constraints">
+                                <include reference="IFO-dr-g0a"/>
+                                <include reference="JZv-r6-QjK"/>
                                 <include reference="JgZ-6f-6w2"/>
-                                <include reference="KQO-mz-Sbu"/>
                                 <include reference="gvi-Lf-pkf"/>
-                                <include reference="rJO-V1-ENh"/>
                             </mask>
                         </variation>
                     </view>
