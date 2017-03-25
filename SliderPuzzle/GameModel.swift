@@ -12,13 +12,13 @@ class GameModel: NSObject {
 
     
     // This method will take the image and slice it in parts for the matrix
-    func retrieveTilesData(image image: UIImage, into howMany: Int) -> [Cellinfo] {
+    func retrieveTilesData(image: UIImage, into howMany: Int) -> [Tile] {
         let scale = Int(image.scale)
         let width = Int(image.size.width / CGFloat(howMany))
         let height = Int(image.size.height / CGFloat(howMany))
-        let cgImage = image.CGImage!
+        let cgImage = image.cgImage!
         //The array with all the info
-        var gameCells: [Cellinfo] = [Cellinfo]()
+        var gameCells: [Tile] = [Tile]()
         
         var adjustedHeight = height
         
@@ -30,19 +30,19 @@ class GameModel: NSObject {
             var adjustedWidth = width
             var x = 0
             for column in 0 ..< howMany {
-                let cell:Cellinfo = Cellinfo()
-                cell.xIndex = row
-                cell.yIndex = column
+                let tile:Tile = Tile()
+                tile.correctPosition.dimX = row
+                tile.correctPosition.dimY = column
                 
                 if column == (howMany - 1) {
                     adjustedWidth = Int(image.size.width) - x
                 }
                 let origin = CGPoint(x: x * scale, y: y * scale)
                 let size = CGSize(width: adjustedWidth * scale, height: adjustedHeight * scale)
-                let tileCgImage = CGImageCreateWithImageInRect(cgImage, CGRect(origin: origin, size: size))!
+                let tileCgImage = cgImage.cropping(to: CGRect(origin: origin, size: size))!
                 
-                cell.image = UIImage(CGImage: tileCgImage, scale: image.scale, orientation: image.imageOrientation)
-                gameCells.append(cell)
+                tile.imageView.image = UIImage(cgImage: tileCgImage, scale: image.scale, orientation: image.imageOrientation)
+                gameCells.append(tile)
                 x += width
             }
             y += height

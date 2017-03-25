@@ -8,30 +8,27 @@
 
 import UIKit
 
-class GameViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class GameViewController: UIViewController, UIGestureRecognizerDelegate {
 
     let gameModel: GameModel = GameModel()
     
-    @IBOutlet weak var collectionView: UICollectionView!
     
-    var gameCells: [Cellinfo] = [Cellinfo]()
-    var emptyCell: Int = 0
+    var gameTiles: [Tile] = [Tile]()
+    var emptyTile: Int = 0
+    var numberOfTilesPerSection: Int = 4
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Configuring the grid
-        self.collectionView.delegate = self
-        self.collectionView.dataSource = self
+        // Retrieve the data from the model to fill the tiles
+        let originalImage: UIImage = UIImage(named: "beach-artwork")!
+        self.gameTiles = self.gameModel.retrieveTilesData(image: originalImage, into: 4)
         
+        // Chosing the empty tile randomly
+        self.emptyTile = Int(arc4random_uniform(UInt32(self.gameTiles.count)))
         
-        // Retrieve the data from the model to fill the cells
-        let originalImage: UIImage = UIImage(named: "hot-air-balloon")!
-        self.gameCells = self.gameModel.retrieveTilesData(image: originalImage, into: 4)
-        self.emptyCell = Int(arc4random_uniform(UInt32(self.gameCells.count)))
-        
-        // Register cell classes
-        self.collectionView.registerNib(UINib(nibName: "GameCell", bundle: nil), forCellWithReuseIdentifier: "customGameCell")
+        //Displaying the tiles
+        layoutTiles()
         
         
     }
@@ -41,51 +38,57 @@ class GameViewController: UIViewController, UICollectionViewDelegate, UICollecti
         // Dispose of any resources that can be recreated.
     }
     
-    // MARK: UICollectionViewDataSource
-    
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
-    }
     
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 16
-    }
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    // This method will use the data from the model to display the images
+    func layoutTiles(){
         
-        //Adjusting the size of cells to fill all the space
-        return CGSize(width: self.collectionView.frame.width/4 - 6, height: self.collectionView.frame.width/4 - 6);
-    }
-    
-    
-    
-    func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-    
+        // Calculating the dimensions of a single tile
+        let tileValue: CGFloat = (view.frame.size.width - CGFloat((self.numberOfTilesPerSection + 1) * 4)) / CGFloat(self.numberOfTilesPerSection)
         
-    }
-    
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let totalIndex:Int = indexPath.row + indexPath.section * 4
         
-        // Filling the cells with the info and images
         
-        let cell: GameCell = collectionView.dequeueReusableCellWithReuseIdentifier("customGameCell", forIndexPath: indexPath) as! GameCell
-
-        let image : UIImage = self.gameCells[totalIndex].image
+        // Displaying the grid. Since I will let different sizes in the game (4x4, 5x5, etc) I will create
+        // the constraints programmatically
+        for i in 0...self.numberOfTilesPerSection - 1 {
+            
+            let heightPosition:CGFloat = CGFloat(i) * (tileValue + 4) + view.frame.size.width/4
+            
+            for j in 0...self.numberOfTilesPerSection - 1 {
+                
+                let selectedImage: UIImageView = self.gameTiles[i*4 + j].imageView
+                
+                if i*4 + j != self.emptyTile {
+                    let recognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                    recognizer.delegate = self
+                    selectedImage.isUserInteractionEnabled = true
+                    selectedImage.addGestureRecognizer(recognizer)
+                    
+                    let widthPosition:CGFloat = CGFloat(j) * (tileValue + 4) + 4
+                
+                    view.addSubview(selectedImage)
+                
+                    let verConstrait = NSLayoutConstraint(item: selectedImage, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: .top, multiplier: 1, constant: heightPosition)
+                
+                    let horConstrait = NSLayoutConstraint(item: selectedImage, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: .leading, multiplier: 1, constant: widthPosition)
+                
+                    
+                    let heightConstrait = NSLayoutConstraint(item: selectedImage, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: tileValue)
+                    let widthConstrait = NSLayoutConstraint(item: selectedImage, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: . notAnAttribute, multiplier: 1, constant: tileValue)
+            
+                    view.addConstraints([horConstrait, verConstrait, heightConstrait, widthConstrait])
+                }
+            }
         
-        cell.cellImage.image = image
-        
-        if totalIndex == self.emptyCell {
-            cell.cellImage.alpha = 0
         }
-        // This propierties will tell us the correct position of te tile
-        cell.xIndex = self.gameCells[totalIndex].xIndex
-        cell.yIndex = self.gameCells[totalIndex].yIndex
-        
-        
-        
-        return cell
+    }
+    
+    func handlePan(_ sender: UIPanGestureRecognizer) {
+        let translation = sender.translation(in: self.view)
+        if let view = sender.view {
+            view.center = CGPoint(x:view.center.x, y:view.center.y + translation.y)
+        }
+        sender.setTranslation(CGPoint(x: 0, y: 0), in: self.view)
     }
 
 
