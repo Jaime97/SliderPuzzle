@@ -15,7 +15,6 @@ struct Position{
 
 class Tile: UIView {
     
-    
     var actualPosition:Position = Position(dimX: 0,dimY: 0)
     var correctPosition:Position = Position(dimX: 0,dimY: 0)
     

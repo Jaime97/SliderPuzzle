@@ -57,6 +57,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             for j in 0...self.numberOfTilesPerSection - 1 {
                 
                 let selectedImage: UIImageView = self.gameTiles[i*4 + j].imageView
+                selectedImage.tag = i*4 + j
                 
                 if i*4 + j != self.emptyTile {
                     let recognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
@@ -86,9 +87,19 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     func handlePan(_ sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: self.view)
         if let view = sender.view {
+            let imageIndex:Int = (sender.view?.tag)!
+            
             view.center = CGPoint(x:view.center.x, y:view.center.y + translation.y)
         }
         sender.setTranslation(CGPoint(x: 0, y: 0), in: self.view)
+    }
+    
+    
+    func whereToMove(imageIndex:Int) -> Int {
+        var direction:Int = 0
+        
+        
+        return 0
     }
 
 
