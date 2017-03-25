@@ -99,6 +99,18 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         var direction:Int = 0
         
         
+        
+        if imageIndex % self.numberOfTilesPerSection == self.emptyTile % self.numberOfTilesPerSection{
+            // The tiles are in the same column
+            
+        }
+        else if imageIndex / self.numberOfTilesPerSection == self.emptyTile / self.numberOfTilesPerSection{
+            // The tiles are in the same row
+            
+        }
+        
+        
+        
         return 0
     }
 
