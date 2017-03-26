@@ -1,6 +1,8 @@
-# SliderPuzzle (IOS App)
+# SliderPuzzle (IOS App)
 
-### Key decisions
+---
+
+###Key decisions
 
 I used the **view/viewController/Model** pattern. That pattern separates the UI from the logic and the data acquisition. For this I used several classes; each of them belongs to one of this types:
 
