@@ -53,6 +53,9 @@ class GameModel: NSObject {
         return gameTiles
     }
     
+    
+    
+    // After every movement this function will be called to reoder the identifiers
     func reorder(gameTiles:[Tile]) -> [Tile] {
         
         return gameTiles.sorted(by: { $0.imageView.tag  < $1.imageView.tag  })

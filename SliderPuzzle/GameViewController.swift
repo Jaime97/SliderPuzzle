@@ -9,6 +9,20 @@
 import UIKit
 
 class GameViewController: UIViewController, UIGestureRecognizerDelegate {
+    
+    //MARK: ------- IBOutlets properties ---------
+    
+    @IBOutlet weak var shadowView: UIView!
+    
+    
+    @IBOutlet weak var endView: UIView!
+    
+    @IBOutlet weak var difficultyLabel: UILabel!
+    
+    
+    @IBOutlet weak var movementsLabel: UILabel!
+    
+    var imageSelected:String = String()
 
     // I'll get the data from the model
     let gameModel: GameModel = GameModel()
@@ -17,7 +31,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var gameTiles: [Tile] = [Tile]()
     
     var emptyTile: Int = 0
-    var numberOfTilesPerSection: Int = 4
+    var numberOfTilesPerSection: Int = 2
     
     
     var positions: [CGPoint] = [CGPoint]()
@@ -29,12 +43,14 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var movementLimit:CGFloat = 0
     
+    var movements:Int = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Retrieve the data from the model to fill the tiles
-        let originalImage: UIImage = UIImage(named: "beach-artwork")!
-        self.gameTiles = self.gameModel.retrieveTilesData(image: originalImage, into: 4)
+        let originalImage: UIImage = UIImage(named: imageSelected)!
+        self.gameTiles = self.gameModel.retrieveTilesData(image: originalImage, into: self.numberOfTilesPerSection)
         
         // Chosing the empty tile randomly
         self.emptyTile = Int(arc4random_uniform(UInt32(self.gameTiles.count)))
@@ -68,8 +84,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             
             for j in 0...self.numberOfTilesPerSection - 1 {
                 
-                let selectedTile: Tile = self.gameTiles[i*4 + j]
-                selectedTile.imageView.tag = i*4 + j
+                let selectedTile: Tile = self.gameTiles[i*self.numberOfTilesPerSection + j]
+                selectedTile.imageView.tag = i*self.numberOfTilesPerSection + j
                 
                 let widthPosition:CGFloat = CGFloat(j) * (self.tileValue + 4) + 4
                 
@@ -80,11 +96,14 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                 coord.y = heightPosition + self.tileValue / 2
                 self.positions.append(coord)
                 
-                if i*4 + j != self.emptyTile {
-                    let recognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-                    recognizer.delegate = self
+                if i*self.numberOfTilesPerSection + j != self.emptyTile {
+                    let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                    let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+                    panRecognizer.delegate = self
+                    tapRecognizer.delegate = self
                     selectedTile.imageView.isUserInteractionEnabled = true
-                    selectedTile.imageView.addGestureRecognizer(recognizer)
+                    selectedTile.imageView.addGestureRecognizer(panRecognizer)
+                    selectedTile.imageView.addGestureRecognizer(tapRecognizer)
                 
                 
                     view.addSubview(selectedTile.imageView)
@@ -124,27 +143,33 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                 calculateTilesMoved(imageIndex: imageIndex)
                 
             }
-        
-            // It tryes to go up
-            if translation.y < 0 && canIMove(imageIndex: imageIndex, viewCenter: view.center, direction: 0) {
-                performMovement(movementX: 0, movementY: limitingMovement(movementTryed: view.center.y+translation.y, positiveMovement: false)-view.center.y)
+            if sameColumn(imageIndex: imageIndex){
+                // It tryes to go up
+                if translation.y < 0 && canIMove(imageIndex: imageIndex, viewCenter: view.center, direction: 0) {
+                    performMovement(movementX: 0, movementY: limitingMovement(movementTryed: view.center.y+translation.y, positiveMovement: false)-view.center.y)
+                }
+                // It tryes to go down
+                if translation.y > 0 && canIMove(imageIndex: imageIndex, viewCenter: view.center, direction: 1) {
+                    performMovement(movementX: 0, movementY: limitingMovement(movementTryed: view.center.y + translation.y, positiveMovement: true)-view.center.y)
+                }
             }
-            // It tryes to go down
-            if translation.y > 0 && canIMove(imageIndex: imageIndex, viewCenter: view.center, direction: 1) {
-                performMovement(movementX: 0, movementY: limitingMovement(movementTryed: view.center.y + translation.y, positiveMovement: true)-view.center.y)
-            }
-            // It tryes to go to the left
-            if translation.x < 0 && canIMove(imageIndex: imageIndex, viewCenter: view.center, direction: 2) {
-                performMovement(movementX: limitingMovement(movementTryed: view.center.x + translation.x, positiveMovement: false) - view.center.x, movementY: 0)
-            }
-            // It tryes to go to the right
-            if translation.x > 0 && canIMove(imageIndex: imageIndex, viewCenter: view.center, direction: 3) {
-                performMovement(movementX: limitingMovement(movementTryed: view.center.x + translation.x, positiveMovement: true) - view.center.x, movementY: 0)
+            if sameRow(imageIndex: imageIndex) {
+                // It tryes to go to the left
+                if translation.x < 0 && canIMove(imageIndex: imageIndex, viewCenter: view.center, direction: 2) {
+                    performMovement(movementX: limitingMovement(movementTryed: view.center.x + translation.x, positiveMovement: false) - view.center.x, movementY: 0)
+                }
+                // It tryes to go to the right
+                if translation.x > 0 && canIMove(imageIndex: imageIndex, viewCenter: view.center, direction: 3) {
+                    performMovement(movementX: limitingMovement(movementTryed: view.center.x + translation.x, positiveMovement: true) - view.center.x, movementY: 0)
+                }
             }
 
             if sender.state == UIGestureRecognizerState.ended {
                 
                 finishingMovement(imageIndex:imageIndex)
+                if checkIfEnds() {
+                    showEndView()
+                }
                 
             }
             
@@ -154,6 +179,42 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         
     }
+    
+    
+    func handleTap(_ sender: UITapGestureRecognizer) {
+        
+        if sender.view != nil {
+            let imageIndex:Int = (sender.view?.tag)!
+            self.emptyBigger = false
+            if self.positions[self.emptyTile].x+self.positions[self.emptyTile].y > self.positions[imageIndex].x+self.positions[imageIndex].y {
+                self.emptyBigger = true
+            }
+            calculateTilesMoved(imageIndex: imageIndex)
+            
+            if sameColumn(imageIndex: imageIndex) && imageIndex > self.emptyTile {
+                performAutomaticMovement(movement: -self.numberOfTilesPerSection)
+                
+            } else if sameColumn(imageIndex: imageIndex) && imageIndex < self.emptyTile {
+                performAutomaticMovement(movement: self.numberOfTilesPerSection)
+                
+            }else if sameRow(imageIndex: imageIndex) && imageIndex > self.emptyTile {
+                performAutomaticMovement(movement: -1)
+                
+            } else if sameRow(imageIndex: imageIndex) && imageIndex < self.emptyTile {
+                performAutomaticMovement(movement: 1)
+            }
+            
+            finishingMovement(imageIndex:imageIndex)
+            if checkIfEnds() {
+                showEndView()
+            }
+            
+            
+        }
+        
+        
+    }
+
     
     
     // MARK: --------- Preparing to move methods ----------
@@ -203,75 +264,68 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         switch direction {
         case 0:
-            if imageIndex % self.numberOfTilesPerSection == self.emptyTile % self.numberOfTilesPerSection{
-                // The tiles are in the same column
-                if self.emptyBigger {
-                    self.movementLimit = self.positions[imageIndex].y
-                    if self.positions[imageIndex].y < viewCenter.y {
-                        canMove = true
-                    }
+            // Wants to go up
+            if self.emptyBigger {
+                self.movementLimit = self.positions[imageIndex].y
+                if self.positions[imageIndex].y < viewCenter.y {
+                    canMove = true
                 }
-                else {
-                    self.movementLimit = self.positions[imageIndex - self.numberOfTilesPerSection].y
-                    if self.positions[imageIndex - self.numberOfTilesPerSection].y < viewCenter.y {
-                        canMove = true
-                    }
+            }
+            else {
+                self.movementLimit = self.positions[imageIndex - self.numberOfTilesPerSection].y
+                if self.positions[imageIndex - self.numberOfTilesPerSection].y < viewCenter.y {
+                    canMove = true
                 }
             }
             
             break
         case 1:
-            if imageIndex % self.numberOfTilesPerSection == self.emptyTile % self.numberOfTilesPerSection{
-                // The tiles are in the same column
-                if self.emptyBigger {
-                    self.movementLimit = self.positions[imageIndex + self.numberOfTilesPerSection].y
-                    if self.positions[imageIndex + self.numberOfTilesPerSection].y > viewCenter.y {
-                        canMove = true
-                    }
+            // Wants to go down
+            if self.emptyBigger {
+                self.movementLimit = self.positions[imageIndex + self.numberOfTilesPerSection].y
+                if self.positions[imageIndex + self.numberOfTilesPerSection].y > viewCenter.y {
+                canMove = true
                 }
-                else {
-                    self.movementLimit = self.positions[imageIndex].y
-                    if self.positions[imageIndex].y > viewCenter.y {
-                        canMove = true
-                    }
+            }
+            else {
+                self.movementLimit = self.positions[imageIndex].y
+                if self.positions[imageIndex].y > viewCenter.y {
+                    canMove = true
                 }
             }
             
             break
         case 2:
-            if imageIndex / self.numberOfTilesPerSection == self.emptyTile / self.numberOfTilesPerSection{
-                // The tiles are in the same row
-                if self.emptyBigger {
-                    self.movementLimit = self.positions[imageIndex].x
-                    if self.positions[imageIndex].x < viewCenter.x {
-                        canMove = true
-                    }
+            // Wants to go left
+            if self.emptyBigger {
+                self.movementLimit = self.positions[imageIndex].x
+                if self.positions[imageIndex].x < viewCenter.x {
+                    canMove = true
                 }
-                else {
-                    self.movementLimit = self.positions[imageIndex - 1].x
-                    if self.positions[imageIndex - 1].x < viewCenter.x {
-                        canMove = true
-                    }
+            }
+            else {
+                self.movementLimit = self.positions[imageIndex - 1].x
+                if self.positions[imageIndex - 1].x < viewCenter.x {
+                    canMove = true
                 }
             }
             
             break
         case 3:
-            if imageIndex / self.numberOfTilesPerSection == self.emptyTile / self.numberOfTilesPerSection{
-                // The tiles are in the same row
-                if self.emptyBigger {
-                    self.movementLimit = self.positions[imageIndex + 1].x
-                    if self.positions[imageIndex + 1].x > viewCenter.x {
-                        canMove = true
-                    }
-                }
-                else {
-                    self.movementLimit = self.positions[imageIndex].x
-                    if self.positions[imageIndex].x > viewCenter.x {
-                        canMove = true
-                    }
+            // Wants to go right
+            if self.emptyBigger {
+                self.movementLimit = self.positions[imageIndex + 1].x
+                if self.positions[imageIndex + 1].x > viewCenter.x {
+                    canMove = true
                 }
             }
+            else {
+                self.movementLimit = self.positions[imageIndex].x
+                if self.positions[imageIndex].x > viewCenter.x {
+                    canMove = true
+                }
+            }
+            
             
             break
             
@@ -280,6 +334,14 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         return canMove
+    }
+    
+    func sameColumn(imageIndex:Int) -> Bool {
+        return imageIndex % self.numberOfTilesPerSection == self.emptyTile % self.numberOfTilesPerSection
+    }
+    
+    func sameRow(imageIndex:Int) -> Bool {
+        return imageIndex / self.numberOfTilesPerSection == self.emptyTile / self.numberOfTilesPerSection
     }
     
     
@@ -291,6 +353,88 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             view.center = CGPoint(x:movementX + view.center.x, y:movementY + view.center.y)
         }
         
+    }
+    
+    func performAutomaticMovement(movement: Int){
+        
+        for i in 0...self.tilesMovedIndex.count - 1 {
+            let view = self.gameTiles[self.tilesMovedIndex[i]].imageView
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                view.center = self.positions[self.tilesMovedIndex[i]+movement]
+            }, completion: nil)
+        }
+    }
+    
+    
+    
+    func finishingMovement(imageIndex:Int) {
+        
+        let previousTag:Int = self.gameTiles[imageIndex].imageView.tag
+        
+        for i in 0...self.tilesMovedIndex.count - 1 {
+            let view = self.gameTiles[self.tilesMovedIndex[i]].imageView
+            let selectedEndIndex:Int = nearestIndex(point: view.center)
+            let nearestPoint:CGPoint = self.positions[selectedEndIndex]
+            view.tag = selectedEndIndex
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                
+                view.center = nearestPoint
+                
+            }, completion: nil)
+
+        }
+        if previousTag != self.gameTiles[imageIndex].imageView.tag {
+            //The views has moved, so the empty space have to change
+            self.movements += 1
+            self.gameTiles[self.emptyTile].imageView.tag = imageIndex
+            self.emptyTile = imageIndex
+            self.gameTiles = self.gameModel.reorder(gameTiles: self.gameTiles)
+        }
+        
+    }
+    
+    
+    //MARK: ---------- Other methods ----------
+    
+    
+    func checkIfEnds() -> Bool {
+        
+        var endOfGame:Bool = true
+        for i in 0...self.gameTiles.count-1 {
+            if self.gameTiles[i].correctPosition != self.gameTiles[i].imageView.tag {
+                endOfGame = false
+            }
+            
+        }
+        return endOfGame
+        
+    }
+    
+    func showEndView() {
+        
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+            
+            self.difficultyLabel.text = ("Difficulty: " + String(self.numberOfTilesPerSection) + "x" + String(self.numberOfTilesPerSection))
+            self.movementsLabel.text = ("Movements: " + String(self.movements))
+            
+            self.shadowView.alpha = 1
+            self.endView.alpha = 1
+            
+            self.view.bringSubview(toFront: self.shadowView)
+            self.view.bringSubview(toFront: self.endView)
+            
+            
+            
+        }, completion: nil)
+    }
+    
+    func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
+        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y);
+    }
+    
+    func CGPointDistance(from: CGPoint, to: CGPoint) -> CGFloat {
+        return sqrt(CGPointDistanceSquared(from: from, to: to));
     }
     
     func nearestIndex(point:CGPoint) -> Int {
@@ -307,40 +451,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         return bestIndex
         
-    }
-    
-    func finishingMovement(imageIndex:Int) {
-        
-        let previousTag:Int = self.gameTiles[imageIndex].imageView.tag
-        
-        for i in 0...self.tilesMovedIndex.count - 1 {
-            let view = self.gameTiles[self.tilesMovedIndex[i]].imageView
-            let selectedEndIndex:Int = nearestIndex(point: view.center)
-            let nearestPoint:CGPoint = self.positions[selectedEndIndex]
-            view.tag = selectedEndIndex
-            
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveLinear, animations: {
-                
-                view.center = nearestPoint
-                
-            }, completion: nil)
-
-        }
-        if previousTag != self.gameTiles[imageIndex].imageView.tag {
-            //The views has moved, so the empty space have to change
-            self.gameTiles[self.emptyTile].imageView.tag = imageIndex
-            self.emptyTile = imageIndex
-            self.gameTiles = self.gameModel.reorder(gameTiles: self.gameTiles)
-        }
-        
-    }
-    
-    func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
-        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y);
-    }
-    
-    func CGPointDistance(from: CGPoint, to: CGPoint) -> CGFloat {
-        return sqrt(CGPointDistanceSquared(from: from, to: to));
     }
 
 

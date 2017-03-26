@@ -13,6 +13,7 @@
 		048402581E8545CB003D5256 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 048402561E8545CB003D5256 /* LaunchScreen.storyboard */; };
 		0484026C1E85766B003D5256 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0484026B1E85766B003D5256 /* GameViewController.swift */; };
 		0484026E1E8587F7003D5256 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0484026D1E8587F7003D5256 /* GameModel.swift */; };
+		AE5759B51E883C0D00D29676 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5759B41E883C0D00D29676 /* InitialViewController.swift */; };
 		BCF0836A1E86DD6000726B88 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF083691E86DD6000726B88 /* Tile.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		048402591E8545CB003D5256 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0484026B1E85766B003D5256 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		0484026D1E8587F7003D5256 /* GameModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
+		AE5759B41E883C0D00D29676 /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		BCF083691E86DD6000726B88 /* Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 				048402591E8545CB003D5256 /* Info.plist */,
 				0484026D1E8587F7003D5256 /* GameModel.swift */,
 				BCF083691E86DD6000726B88 /* Tile.swift */,
+				AE5759B41E883C0D00D29676 /* InitialViewController.swift */,
 			);
 			path = SliderPuzzle;
 			sourceTree = "<group>";
@@ -142,6 +145,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE5759B51E883C0D00D29676 /* InitialViewController.swift in Sources */,
 				0484026E1E8587F7003D5256 /* GameModel.swift in Sources */,
 				BCF0836A1E86DD6000726B88 /* Tile.swift in Sources */,
 				0484026C1E85766B003D5256 /* GameViewController.swift in Sources */,
