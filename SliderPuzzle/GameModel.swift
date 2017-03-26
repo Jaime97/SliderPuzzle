@@ -18,7 +18,7 @@ class GameModel: NSObject {
         let height = Int(image.size.height / CGFloat(howMany))
         let cgImage = image.cgImage!
         //The array with all the info
-        var gameCells: [Tile] = [Tile]()
+        var gameTiles: [Tile] = [Tile]()
         
         var adjustedHeight = height
         
@@ -31,8 +31,7 @@ class GameModel: NSObject {
             var x = 0
             for column in 0 ..< howMany {
                 let tile:Tile = Tile()
-                tile.correctPosition.dimY = row
-                tile.correctPosition.dimX = column
+                tile.correctPosition = row * howMany + column
                 
                 if column == (howMany - 1) {
                     adjustedWidth = Int(image.size.width) - x
@@ -42,20 +41,23 @@ class GameModel: NSObject {
                 let tileCgImage = cgImage.cropping(to: CGRect(origin: origin, size: size))!
                 
                 tile.imageView.image = UIImage(cgImage: tileCgImage, scale: image.scale, orientation: image.imageOrientation)
-                gameCells.append(tile)
+                gameTiles.append(tile)
                 x += width
             }
             y += height
         }
         
         // I disorder the tiles before retrieving them
-        gameCells.shuffle()
+        gameTiles.shuffle()
         
-        return gameCells
+        return gameTiles
     }
     
+    func reorder(gameTiles:[Tile]) -> [Tile] {
+        
+        return gameTiles.sorted(by: { $0.imageView.tag  < $1.imageView.tag  })
+    }
     
-
 }
 
 

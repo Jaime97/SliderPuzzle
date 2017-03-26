@@ -19,12 +19,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var emptyTile: Int = 0
     var numberOfTilesPerSection: Int = 4
     
-    struct coordinate{
-        var x: CGFloat
-        var y: CGFloat
-    }
     
-    var positions: [coordinate] = [coordinate]()
+    var positions: [CGPoint] = [CGPoint]()
     
     var emptyBigger: Bool = false
     var tilesMovedIndex: [Int] = [Int]()
@@ -79,7 +75,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                 
                 
                 // I save the position of the tile in the view
-                var coord:coordinate = coordinate(x: 0,y: 0)
+                var coord:CGPoint = CGPoint()
                 coord.x = widthPosition + self.tileValue / 2
                 coord.y = heightPosition + self.tileValue / 2
                 self.positions.append(coord)
@@ -103,9 +99,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             
                     view.addConstraints([horConstrait, verConstrait, heightConstrait, widthConstrait])
                     
-                    
-                    selectedTile.actualPosition.dimX = j
-                    selectedTile.actualPosition.dimY = i
+
                     
                 }
             }
@@ -148,15 +142,16 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                 performMovement(movementX: limitingMovement(movementTryed: view.center.x + translation.x, positiveMovement: true) - view.center.x, movementY: 0)
             }
 
-            
+            if sender.state == UIGestureRecognizerState.ended {
+                
+                finishingMovement(imageIndex:imageIndex)
+                
+            }
             
         }
         sender.setTranslation(CGPoint(x: 0, y: 0), in: self.view)
         
-        if sender.state == UIGestureRecognizerState.ended {
-            
         
-        }
         
     }
     
@@ -296,6 +291,56 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             view.center = CGPoint(x:movementX + view.center.x, y:movementY + view.center.y)
         }
         
+    }
+    
+    func nearestIndex(point:CGPoint) -> Int {
+        var bestPoint:CGPoint = self.positions[0]
+        var bestIndex:Int = 0
+        for i in 0...self.positions.count - 1 {
+            let currentPoint:CGPoint = self.positions[i]
+            if CGPointDistance(from: point, to: currentPoint) < CGPointDistance(from: point, to: bestPoint){
+                bestPoint = currentPoint
+                bestIndex = i
+            }
+            
+            
+        }
+        return bestIndex
+        
+    }
+    
+    func finishingMovement(imageIndex:Int) {
+        
+        let previousTag:Int = self.gameTiles[imageIndex].imageView.tag
+        
+        for i in 0...self.tilesMovedIndex.count - 1 {
+            let view = self.gameTiles[self.tilesMovedIndex[i]].imageView
+            let selectedEndIndex:Int = nearestIndex(point: view.center)
+            let nearestPoint:CGPoint = self.positions[selectedEndIndex]
+            view.tag = selectedEndIndex
+            
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveLinear, animations: {
+                
+                view.center = nearestPoint
+                
+            }, completion: nil)
+
+        }
+        if previousTag != self.gameTiles[imageIndex].imageView.tag {
+            //The views has moved, so the empty space have to change
+            self.gameTiles[self.emptyTile].imageView.tag = imageIndex
+            self.emptyTile = imageIndex
+            self.gameTiles = self.gameModel.reorder(gameTiles: self.gameTiles)
+        }
+        
+    }
+    
+    func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
+        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y);
+    }
+    
+    func CGPointDistance(from: CGPoint, to: CGPoint) -> CGFloat {
+        return sqrt(CGPointDistanceSquared(from: from, to: to));
     }
 
 

@@ -8,15 +8,10 @@
 
 import UIKit
 
-struct Position{
-    var dimX: Int
-    var dimY: Int
-}
 
 class Tile: UIView {
     
-    var actualPosition:Position = Position(dimX: 0,dimY: 0)
-    var correctPosition:Position = Position(dimX: 0,dimY: 0)
+    var correctPosition:Int = 0
     
     var imageView: UIImageView = UIImageView()
     
