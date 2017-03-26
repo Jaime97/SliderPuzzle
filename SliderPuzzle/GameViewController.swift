@@ -27,18 +27,22 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     // I'll get the data from the model
     let gameModel: GameModel = GameModel()
     
-    
+    //The tiles in order
     var gameTiles: [Tile] = [Tile]()
     
     var emptyTile: Int = 0
     var numberOfTilesPerSection: Int = 2
     
-    
+    //This will save the coordinates of every position a tile can take
     var positions: [CGPoint] = [CGPoint]()
+    
+    
     
     var emptyBigger: Bool = false
     var tilesMovedIndex: [Int] = [Int]()
     
+    
+    //The height and width of the tile
     var tileValue:CGFloat = 0
     
     var movementLimit:CGFloat = 0
@@ -49,7 +53,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         
         // Retrieve the data from the model to fill the tiles
-        let originalImage: UIImage = UIImage(named: imageSelected)!
+        let originalImage: UIImage = UIImage(named: imageSelected
+        )!
         self.gameTiles = self.gameModel.retrieveTilesData(image: originalImage, into: self.numberOfTilesPerSection)
         
         // Chosing the empty tile randomly
@@ -191,6 +196,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             calculateTilesMoved(imageIndex: imageIndex)
             
+            
+            //Check every direction
             if sameColumn(imageIndex: imageIndex) && imageIndex > self.emptyTile {
                 performAutomaticMovement(movement: -self.numberOfTilesPerSection)
                 
@@ -336,6 +343,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         return canMove
     }
     
+    
+    //This methods will check if the image is in the same row or column than the white space
     func sameColumn(imageIndex:Int) -> Bool {
         return imageIndex % self.numberOfTilesPerSection == self.emptyTile % self.numberOfTilesPerSection
     }
@@ -347,6 +356,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // MARK: --------- Move methods ----------
     
+    //Called when moving with drag
     func performMovement(movementX:CGFloat, movementY:CGFloat) {
         for i in 0...self.tilesMovedIndex.count - 1 {
             let view = self.gameTiles[self.tilesMovedIndex[i]].imageView
@@ -355,6 +365,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
+    //Called when moving with tap
     func performAutomaticMovement(movement: Int){
         
         for i in 0...self.tilesMovedIndex.count - 1 {
@@ -366,7 +377,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     
-    
+    //After every movement it updates the main variables
     func finishingMovement(imageIndex:Int) {
         
         let previousTag:Int = self.gameTiles[imageIndex].imageView.tag
@@ -397,7 +408,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: ---------- Other methods ----------
     
-    
+    //Every time a movement ends it will check it
     func checkIfEnds() -> Bool {
         
         var endOfGame:Bool = true
@@ -411,6 +422,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
+
     func showEndView() {
         
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
@@ -437,6 +449,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         return sqrt(CGPointDistanceSquared(from: from, to: to));
     }
     
+    
+    // This will return the nearest point for the tile
     func nearestIndex(point:CGPoint) -> Int {
         var bestPoint:CGPoint = self.positions[0]
         var bestIndex:Int = 0
