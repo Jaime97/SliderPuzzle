@@ -31,8 +31,8 @@ class GameModel: NSObject {
             var x = 0
             for column in 0 ..< howMany {
                 let tile:Tile = Tile()
-                tile.correctPosition.dimX = row
-                tile.correctPosition.dimY = column
+                tile.correctPosition.dimY = row
+                tile.correctPosition.dimX = column
                 
                 if column == (howMany - 1) {
                     adjustedWidth = Int(image.size.width) - x
